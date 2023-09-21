@@ -1,12 +1,15 @@
 const express = require('express')
+require('dotenv').config()
 const app = express()
 const bodyParser = require('body-parser')
 const port = (process.env.PORT || 3000)
-
-
-
+const {ObjectID} = require('mongodb')
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://phenicieaaron:R2NBjUket2vJbIFp@cluster0.prtnxyo.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URI;
+
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,13 +32,47 @@ async function run() {
     await client.close();
   }
 }
-run().catch(console.dir);
+//run().catch(console.dir);
+
+async function cxnDB(){
+
+  try{
+    client.connect; 
+    const collection = client.db("aarons-papa-database").collection("dev-profiles");
+    // const collection = client.db("papa").collection("dev-profiles");
+    const result = await collection.find().toArray();
+    //const result = await collection.findOne(); 
+    console.log("cxnDB result: ", result);
+    return result; 
+  }
+  catch(e){
+      console.log(e)
+  }
+  finally{
+    client.close; 
+  }
+}
+app.get('/', async (req, res) => {
+
+  let result = await cxnDB().catch(console.error); 
+
+  // console.log("get/: ", result);
+
+  res.send("here for a second: " + result[0].name)
+  //res.render('index', {  peopleData : result })
+})
 
 
 
+//   let result = await cxnDB().catch(console.error); 
+//   // res.send("here for a second: " +)
 
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({ extended: true }));
+//   // console.log("get/: ", result);
+
+//   res.render('index', {  peopleData : result })
+// })
+
+
 
 let myVariableServer = 'soft coded data'
 
@@ -55,9 +92,9 @@ app.post('/postClientData', function (req, res) {
   res.render('index', {'myVariableClient' : myVariableServer} );
 })
 
-app.get('/', function (req, res) {
-  res.send('Hello World From Express!')
-})
+// app.get('/', function (req, res) {
+//   res.send('Hello World From Express!')
+// })
 
 // app.get('/whatever', function (req, res) {
 //   res.sendFile(__dirname + '/index.html');
