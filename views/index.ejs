@@ -1,31 +1,45 @@
-<!DOCTYPE html>
-
-<html lang="us">
-<head>
-    <meta charset="UTF-8">
-    <title>STUFF</title>
-</head>
-
-<body>
-    <h1>Hello from index.html!!!!????</h1>
+<%- include('partials/html-head') %>
 
 
-    <form action="/postClientData" method="POST">
-        <input type="text" id="userName" name="userName" value="default value"></input>
+<body class="container-fluid">
 
-        <!-- <input type="text" name="title" id="title" value=<%= 'default value' %> 
-        <input type="text" name="content" id="content" value=<%= 'default value' %> -->
 
-        <button class="btn btn-primary" type="submit">submit</button>
+<div class="row">
+  <div class="col-md-6">
+    <h1>Update your Profile Name</h1>
 
+    <%= console.log(profileData) %>
+    
+    <% for (var i=0; i< profileData.length; i++ ) { %>
+      <form method="POST">  
+        <input type="hidden" id="devId" name="devId" value="<%= profileData[i]._id %>"></input>
+        <input type="text" id="devName" name="devName" value="<%= profileData[i].devName %>"></input>
+        <p><%= profileData[i].devName %>'s GitHub = <%= profileData[i].devGitHub %></p>
+        
+        <button class="btn btn-primary" type="submit" formaction="/updateProfile">Update Dev Name</button>
+        <button class="btn btn-warning" type="submit" formaction="/deleteProfile">Delete Dev </button>
+      
+      </form>
+      <br/>
+      <% } %> 
+  </div>
+
+
+  <div class="col-md-6">
+
+  <h2> new dev here!</h2>
+
+    <form action="/insertProfile" method="POST">
+                
+      <input type="text" id="newDevName" name="newDevName" placeholder="new dev go here"></input>
+
+      <button class="btn btn-primary" type="submit">Insert New Dev Name</button>
 
     </form>
 
-    <%= myVariableClient %>
+  </div>
+</div>
 
-    <% console.log("Where?") %>
 
 </body>
-
-
 </html>
